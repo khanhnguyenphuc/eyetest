@@ -1,0 +1,6 @@
+.time-title, .error-title {
+	font-size: 40px;
+}
+.time-count, .error-count, .score-count {
+	font-size: 50px;
+}
