@@ -1,78 +1,102 @@
 
-const SIZE = 2;
+const GRID = 2;
 const SCORE = 0;
 const ERRORS = 0;
 const TIME = 15;
-const LEVEL = 5;
+const LEVEL = 1;
 const COUNT = 0;
 const PADDING = 1;
 const RADIUS = 10;
-const OPACITY = 0.8;
+const OPACITY = 0.78;
 const BORDER = '2px solid white';
 const WIDTH = 720;
 
-var randomHexColor = function() {
-	// var rColor = Math.floor(Math.random() * 255);
-	// var gColor = Math.floor(Math.random() * 255);
-	// var bColor = Math.floor(Math.random() * 255);
-	
-	return color = 'rgb(' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ')';
+var randomColor = function(level) {
+	var colordiff=colorTestLevelColorDiff(level);
+	var r=Math.floor(Math.random()*(255-colordiff));
+	var g=Math.floor(Math.random()*(255-colordiff));
+	var b=Math.floor(Math.random()*(255-colordiff));
+	var color = {
+		general: 'rgb(' + b.toString() + ',' + g.toString() + ',' + b.toString() + ')',
+		differrent: 'rgb(' + (b+colordiff).toString() + ',' + (g+colordiff).toString() + ',' + (b+colordiff).toString() + ')',
+	}
+	return color;
+};
+function colorTestLevelColorDiff(level) {
+	if(level<=58) {
+		var col=[105,75,60,45,30,20,18,16,15,15,15,14,14,14,13,13,13,12,12,12,11,11,11,10,10,9,9,8,8,7,7,7,7,6,6,6,6,5,5,5,5,4,4,4,4,3,3,3,3,2,2,2,2,1,1,1,1,1];
+		return col[level-1];
+	}
+	return 1;
+};
+function colorTestLevelGrid(level) {
+	if(level<2) return 2;
+	if(level<4) return 3;
+	if(level<8) return 4;
+	if(level<13) return 5;
+	if(level<22) return 6;
+	if(level<32) return 7;
+	if(level<36) return 8;	
+	if(level<40) return 9;	
+	if(level<44) return 10;	
+	if(level<48) return 11;	
+	return 12;
 };
 var ui = {
 	gameover: '<div class="game-over text-center col-sm-12 col-md-12 col-lg-12">'+
                 '<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">'+
-                    '<button class="btn btn-default share-game"><i class="fa fa-share-alt-square fa-4x text-info"></i></button>'+
-                    '<button class="btn btn-default start-game"><i class="fa fa-play fa-4x text-success"></i></button>'+
+                '<button class="btn share-game"><i class="fa fa-share-alt-square fa-4x text-info"></i></button>'+
+                '<button class="btn start-game"><i class="fa fa-play fa-4x text-success"></i></button>'+
                 '</div>'+
                 '<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">'+
-                '<button class="btn btn-default achievement-game"><i class="fa fa-trophy fa-2x text-info"></i></button>'+
-                '<button class="btn btn-default leaderboard-game"><i class="fa fa-area-chart fa-2x text-info"></i></button>'+
+                '<button class="btn achievement-game"><i class="fa fa-trophy fa-2x text-warning"></i></button>'+
+                '<button class="btn leaderboard-game"><i class="fa fa-signal fa-2x text-danger"></i></button>'+
+                '<button class="btn rate-game"><i class="fa fa-star fa-2x text-warning"></i></a></button>'+
                 '</div>'+
-                '<div class="row">'+
-                '<button class="btn btn-default rate-game"><i class="fa fa-star fa-2x text-info"></i></a></button>'+
-                '</div>'+
+            	'<footer class="text-center text-primary">@EyeTest By Phuc Khanh</footer>'+
             '</div>'
 };
 var self;
 function EyeTest() {
-	this.size = SIZE;
 	this.score = SCORE;
 	this.errors = ERRORS;
 	this.timing = TIME;
-	this.count = COUNT;
 	this.timer = null;
 	this.container = null;
-	this.opacity = OPACITY;
+	this.level = LEVEL;
 };
 EyeTest.prototype.init = function(container) {
 	self = this;
 	this.container = container;
 	this.start();
-	console.log(self.container.width());
 };
 EyeTest.prototype.start = function() {
 	
 	var box = $('.eyetest-contain', self.container);
 	var time = $('.time-count', self.container);
 	var error = $('.error-count', self.container);
+	var color = randomColor(self.level);
+	var width = self.container.width() > WIDTH ? self.container.width() / 4 - 50 : self.container.width() - 50;
+	
+	var grid = colorTestLevelGrid(self.level);
+	var specialCell = Math.floor((Math.random() * grid * grid));
+
 	box.html("");
 	error.text(self.errors);
 	time.text(self.timing);
-	var color = randomHexColor();
-	var width = self.container.width() > WIDTH ? self.container.width() / 4 - 50 : self.container.width() - 50;
-	var specialCell = Math.floor((Math.random() * self.size * self.size));
-	
-	for (var j = 0; j < self.size*self.size; j++) {
+	for (var j = 0; j < grid*grid; j++) {
 		var td = $('<div/>');
-
-		td.css('float', 'left');
-		td.css('width', 100/self.size + '%');
-		td.css('height', 100/self.size + '%');
-		td.css('border-radius', RADIUS);
-		td.css('background', color);
-		td.css('border', BORDER);
+		td.css({
+			'float': 'left', 
+			'borderRadius': RADIUS,
+			'cursor': 'pointer',
+			'border': BORDER,
+			'boxSizing': 'border-box',
+			'width': (100/grid).toString()+'%',
+			'height': (100/grid).toString()+'%',
+			'backgroundColor': color.general});
 		if (j == specialCell) {
-			td.css('opacity', self.opacity);
+			td.css('backgroundColor', color.differrent);
 			// td.click(function(e) {
 		 //        self.confirm(true);
 		 //    });
@@ -101,20 +125,7 @@ EyeTest.prototype.confirm = function(answer) {
 		this.score += 1;
 		self.timing = TIME;
 		score.html(this.score);
-		if (this.score  == 1) {
-			this.size += 1;
-		} else if (this.score == 4) {
-			this.size += 1;
-		} else {
-			this.count += 1;
-			if (this.count % this.size == 0) {
-				this.size += 1;
-				// this.level += 2;
-				this.count = 0;
-				this.opacity += 0.03;
-				console.log(self.opacity);
-			}
-		}
+		this.level++;
 
 		this.start();
 	} else {
@@ -158,13 +169,10 @@ EyeTest.prototype.stop = function() {
 	this.reset();
 };
 EyeTest.prototype.reset = function() {
-
-	this.size = SIZE;
 	this.score = SCORE;
-	this.timing = TIME;
 	this.errors = ERRORS;
-	this.count = COUNT;
-	// this.level = LEVEL;
+	this.timing = TIME;
 	this.timer = null;
-	this.opacity = OPACITY;
+	this.container = null;
+	this.level = LEVEL;
 };

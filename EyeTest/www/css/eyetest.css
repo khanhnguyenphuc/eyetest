@@ -4,6 +4,7 @@
 }
 body {
 	font-family: electric;
+	font-size: 16px;
 }
 .time-title, .error-title {
 	font-size: 40px;
@@ -34,5 +35,9 @@ body {
   margin: 10px auto;
 }
 .game-over button {
-	margin: 10px;	
+	margin: 10px;
+	background: transparent;
+}
+footer {
+	margin: 8px;
 }
