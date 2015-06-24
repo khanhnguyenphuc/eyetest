@@ -1,6 +1,38 @@
+@font-face {
+	font-family: electric;
+	src: url(ac.woff);
+}
+body {
+	font-family: electric;
+}
 .time-title, .error-title {
 	font-size: 40px;
+	text-align: center;
 }
 .time-count, .error-count, .score-count {
 	font-size: 50px;
+	color: white;
+	border-radius: 10px;
+}
+.error-count {
+	background-color: lightcoral;
+}
+.time-count {
+	background-color: lightseagreen;
+}
+.eyetest-contain {
+	width: 330px;
+	height: 330px;
+}
+.score-count {
+	  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  padding-top: 25px;
+  color: white;
+  background-color: lightgreen;
+  margin: 10px auto;
+}
+.game-over button {
+	margin: 10px;	
 }
