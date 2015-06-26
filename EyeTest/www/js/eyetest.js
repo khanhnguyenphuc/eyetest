@@ -10,6 +10,8 @@ const RADIUS = 10;
 const OPACITY = 0.78;
 const BORDER = '2px solid white';
 const WIDTH = 720;
+const SLEVEL1 = 15;
+const SLEVEL2 = 30;
 
 var randomColor = function(level) {
 	var colordiff=colorTestLevelColorDiff(level);
@@ -42,28 +44,17 @@ function colorTestLevelGrid(level) {
 	if(level<48) return 11;	
 	return 12;
 };
-var ui = {
-	gameover: '<div class="game-over text-center col-sm-12 col-md-12 col-lg-12">'+
-                '<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">'+
-                '<button class="btn share-game"><i class="fa fa-share-alt-square fa-4x text-info"></i></button>'+
-                '<button class="btn start-game"><i class="fa fa-play fa-4x text-success"></i></button>'+
-                '</div>'+
-                '<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">'+
-                '<button class="btn achievement-game"><i class="fa fa-trophy fa-2x text-warning"></i></button>'+
-                '<button class="btn leaderboard-game"><i class="fa fa-signal fa-2x text-danger"></i></button>'+
-                '<button class="btn rate-game"><i class="fa fa-star fa-2x text-warning"></i></a></button>'+
-                '</div>'+
-            	'<footer class="text-center text-primary">@EyeTest By Phuc Khanh</footer>'+
-            '</div>'
-};
+
 var self;
+
 function EyeTest() {
 	this.score = SCORE;
 	this.errors = ERRORS;
 	this.timing = TIME;
-	this.timer = null;
+	this.game_timer = null;
 	this.container = null;
 	this.level = LEVEL;
+	this.isFinished = false;
 };
 EyeTest.prototype.init = function(container) {
 	self = this;
@@ -76,11 +67,15 @@ EyeTest.prototype.start = function() {
 	var time = $('.time-count', self.container);
 	var error = $('.error-count', self.container);
 	var color = randomColor(self.level);
-	var width = self.container.width() > WIDTH ? self.container.width() / 4 - 50 : self.container.width() - 50;
-	
+	var width = window.innerWidth > WIDTH ? window.innerWidth/4 - window.innerWidth/10 : window.innerWidth - window.innerWidth/5;
+	console.log(window.innerWidth);
 	var grid = colorTestLevelGrid(self.level);
 	var specialCell = Math.floor((Math.random() * grid * grid));
 
+	this.isFinished = false;
+	box.width(width);
+	box.height(width);
+	box.css('visibility', '');
 	box.html("");
 	error.text(self.errors);
 	time.text(self.timing);
@@ -113,9 +108,9 @@ EyeTest.prototype.start = function() {
 		}
 		box.append(td);
 	}
-	clearInterval(self.timer);
+	clearInterval(self.game_timer);
 	if (self.score != 0)
-		self.timer = setInterval(self.update, 1000);
+		self.game_timer = setInterval(self.update, 1000);
 };
 EyeTest.prototype.confirm = function(answer) {
 
@@ -126,18 +121,19 @@ EyeTest.prototype.confirm = function(answer) {
 		self.timing = TIME;
 		score.html(this.score);
 		this.level++;
-
+		playSound('beep', 'media/beep.mp3');
 		this.start();
 	} else {
+		playSound('error', 'media/error.mp3');
 		if (this.score != 0) {
 
 			var box = $('.eyetest-contain', this.container);
-			// degree time 2 seconds
+			// degree time 3 seconds
 			// if time equal 0 then endgame
 			this.errors += 1;
 			$('.error-count', this.container).text(self.errors);
-			if (this.timing > 2) {
-				this.timing -= 2;
+			if (this.timing > 3) {
+				this.timing -= 3;
 				$('.time-count', self.container).text(self.timing);
 			}
 			else {
@@ -152,27 +148,40 @@ EyeTest.prototype.update = function() {
 	if (self.timing <= 0)
 		self.stop();
 	self.timing -= 1;
-	// console.log(this.timing);
 	$('.time-count', self.container).text(self.timing);
 };
 EyeTest.prototype.stop = function() {
 	var box = $('.eyetest-contain', this.container);
+	var highScore = localStorage.getItem("PK-EyeTest-HighScore") ? localStorage.getItem("PK-EyeTest-HighScore") : 0;
+    
+    this.isFinished = true;
+	if (typeof(Storage) != "undefined") {
+        // Store
+        localStorage.setItem("PK-EyeTest-HighScore", highScore);
+    }
+
+    if (highScore < this.score) {
+        highScore = this.score;
+        submitScore();
+    }
+    submitAchivement();
+	if (this.score < SLEVEL1)
+		playSound('gameover', 'media/gameover.mp3');
+	else if (this.score < SLEVEL2) {
+		playSound('owesome', 'media/awesome.mp3');
+	} else {
+		playSound('genius', 'media/genius.mp3');
+	}
 	$('.time-count', this.container).text(0);
-	box.html(ui.gameover);
-	// $('.start-game', box).click(function(e) {
-	// 		        self.start();
-	// 		    });
-	$('.start-game', box)[0].addEventListener("touchstart", function(e) {
-			        self.start();
-			    }, false);
-	clearInterval(self.timer);
+	box.css('visibility', 'hidden');
+	$('.game-over').show(1500);
+	clearInterval(self.game_timer);
 	this.reset();
 };
 EyeTest.prototype.reset = function() {
 	this.score = SCORE;
 	this.errors = ERRORS;
 	this.timing = TIME;
-	this.timer = null;
-	this.container = null;
+	this.game_timer = null;
 	this.level = LEVEL;
 };

@@ -18,51 +18,68 @@
     under the License.
 -->
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="msapplication-tap-highlight" content="no" />
-        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
 
-        <!-- Optional theme -->
-        <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-theme.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-theme.min.css">
 
-        <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
-        <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
-        <link rel="stylesheet" type="text/css" href="css/eyetest.css" />
-        <title>Hello World</title>
-    </head>
-    <body>
-        <div class="container">
-
-            <div class="container text-center score-count">0</div>
-
-            <div class="eyetest-contain container text-center"></div>
-            <div class="row">
-            <div class="timer col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            <div class="time-title">TIME</div>
-            <div class="bg-success time-count text-center">15</div></div>
-
-            <div class="errors col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                <div class="error-title">ERRORS</div>
-                <div class="bg-info text-center error-count">0</div>
-            </div>
-            </div>
+    <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <link rel="stylesheet" type="text/css" href="css/eyetest.css" />
+    <title>Eye Test</title>
+</head>
+<body onload="onLoad()">
+    <div class="container eyetest-container">
+        <div class="score col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="container text-center high-score-count pull-left">0</div>
+            <div class="container text-center score-count pull-right">0</div>
         </div>
 
+        <div class="eyetest-contain"></div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="timer col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="time-title text-info">TIME</div>
+                <div class="bg-success time-count text-center">15</div></div>
+
+                <div class="errors col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <div class="error-title text-info">ERRORS</div>
+                    <div class="bg-info text-center error-count">0</div>
+                </div>
+            </div>
+
+            
+        </div>
+        <div class="game-over text-center col-xs-12 col-sm-12 col-md-12 col-lg-12" style="display: none">
+            <div class="row gameover-title text-info">GAME OVER</div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <button class="btn share-game"><i class="fa fa-share-alt-square fa-4x text-info"></i></button>
+                <button class="btn start-game"><i class="fa fa-play fa-4x text-success"></i></button>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <button class="btn achievement-game"><i class="fa fa-trophy fa-2x text-warning"></i></button>
+                <button class="btn leaderboard-game"><i class="fa fa-signal fa-2x text-danger"></i></button>
+                <button class="btn rate-game"><i class="fa fa-star fa-2x text-warning"></i></a></button>
+            </div>
+            <footer class="text-center text-primary">@EyeTest By Phuc Khanh</footer>
+        </div>
         <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript" src="js/eyetest.js"></script>
+        <!-- // <script type="text/javascript" src="js/index.js"></script> -->
         <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/audio.js"></script>
+        <script type="text/javascript" src="js/googleplaygame.js"></script>
+        <script type="text/javascript" src="js/admob.js"></script>
+        <script type="text/javascript" src="js/capture.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="js/eyetest.js"></script>
         <script type="text/javascript">
-            $(function (argument) {
-                var eyetest = new EyeTest();
-                eyetest.init($('.container'));
-            });
         </script>
     </body>
-</html>
+    </html>

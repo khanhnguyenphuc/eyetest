@@ -6,11 +6,11 @@ body {
 	font-family: electric;
 	font-size: 16px;
 }
-.time-title, .error-title {
+.time-title, .error-title, .gameover-title {
 	font-size: 40px;
 	text-align: center;
 }
-.time-count, .error-count, .score-count {
+.time-count, .error-count, .score-count, .high-score-count {
 	font-size: 50px;
 	color: white;
 	border-radius: 10px;
@@ -21,22 +21,32 @@ body {
 .time-count {
 	background-color: lightseagreen;
 }
-.eyetest-contain {
-	width: 330px;
-	height: 330px;
+.eyetest-contain{
+	margin: auto;
 }
-.score-count {
-	  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  padding-top: 25px;
-  color: white;
-  background-color: lightgreen;
-  margin: 10px auto;
+.score-count, .high-score-count {
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	padding-top: 25px;
+	color: white;
+	background-color: lightgreen;
+	margin: 10px auto;
+}
+.high-score-count {
+	background-color: lightcoral;
+
+}
+.game-over {
+	position: absolute;
+	top: 30%;
+	z-index: 99999;
 }
 .game-over button {
 	margin: 10px;
 	background: transparent;
+	padding: 0;
+	border: 0;
 }
 footer {
 	margin: 8px;
