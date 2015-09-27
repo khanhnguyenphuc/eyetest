@@ -15,10 +15,9 @@ function onBackKeyDown(event) {
 }
 var initApp = function() {
     doLoginGPlus();
-    initAd();
-
-    createBanner();
-    createInterstitial();
+    adbuddiz.setAndroidPublisherKey("79e8e169-47a3-4ae8-bbb3-2406e851fa82");
+    // adbuddiz.setIOSPublisherKey("TEST_PUBLISHER_KEY_IOS");
+    adbuddiz.cacheAds();
 };
 function resetLayout() {
     var container = $('.eyetest-container');
@@ -33,6 +32,7 @@ $(function () {
     var countPlaying = 0;
     var eyetest = new EyeTest();
     eyetest.init($('.eyetest-container'));
+    resetLayout();
 
     $('.leaderboard-game').click(function(e) {
         googleplaygame.showLeaderboard({
@@ -43,12 +43,7 @@ $(function () {
         googleplaygame.showAchievements();
     });
     $('.share-game').click(function(e) {
-        AdMob.removeBanner(function() {
-            sharePhoto(function() {
-                createBanner();
-            });
-        });
-        
+        sharePhoto();
     });
 
     $('.rate-game').on('click', function(e) {
@@ -67,18 +62,17 @@ $(function () {
     //                 $('.game-over').hide();
     //                 eyetest.start();
     //             });
-    $('.start-game')[0].addEventListener("touchstart", function(e) {
+$('.start-game')[0].addEventListener("touchstart", function(e) {
 
-        createInterstitial();
-        resetLayout();
-        $('.game-over').hide();
-        countPlaying ++;
-        eyetest.start();
-    }, false);
-    setInterval(function() {
-        if (eyetest.isFinished && countPlaying % 2 == 0) {
-            AdMob.showInterstitial();
-            eyetest.isFinished = false;
-        }
-    }, 200);
+    resetLayout();
+    $('.game-over').hide();
+    countPlaying ++;
+    eyetest.start();
+}, false);
+setInterval(function() {
+    if (eyetest.isFinished && countPlaying % 2 == 0) {
+        adbuddiz.showAd();
+        eyetest.isFinished = false;
+    }
+}, 200);
 });

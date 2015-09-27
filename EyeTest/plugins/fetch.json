@@ -68,5 +68,17 @@
             "type": "registry",
             "id": "org.apache.cordova.file"
         }
+    },
+    "com.purplebrain.adbuddiz.sdk": {
+        "source": {
+            "type": "registry",
+            "id": "com.purplebrain.adbuddiz.sdk"
+        }
+    },
+    "org.apache.cordova.device": {
+        "source": {
+            "type": "registry",
+            "id": "org.apache.cordova.device"
+        }
     }
 }

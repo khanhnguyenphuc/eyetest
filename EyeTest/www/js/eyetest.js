@@ -67,10 +67,19 @@ EyeTest.prototype.start = function() {
 	var time = $('.time-count', self.container);
 	var error = $('.error-count', self.container);
 	var color = randomColor(self.level);
-	var width = window.innerWidth > WIDTH ? window.innerWidth/4 - window.innerWidth/10 : window.innerWidth - window.innerWidth/5;
-	console.log(window.innerWidth);
+	var width = window.innerWidth;
+	
 	var grid = colorTestLevelGrid(self.level);
 	var specialCell = Math.floor((Math.random() * grid * grid));
+	if (width <= 330) {
+		width =  width - width/2;
+	} else if (width <= 360) {
+		width =  width - width/5;
+	} else if ( width <= 630) {
+		width = window.innerWidth - window.innerWidth/5;
+	} else {
+		width = window.innerWidth/3 - window.innerWidth/10;
+	}
 
 	this.isFinished = false;
 	box.width(width);
@@ -121,7 +130,7 @@ EyeTest.prototype.confirm = function(answer) {
 		self.timing = TIME;
 		score.html(this.score);
 		this.level++;
-		playSound('beep', 'media/beep.mp3');
+		playSound('beep', 'media/ding.MP3');
 		this.start();
 	} else {
 		playSound('error', 'media/error.mp3');
@@ -155,14 +164,14 @@ EyeTest.prototype.stop = function() {
 	var highScore = localStorage.getItem("PK-EyeTest-HighScore") ? localStorage.getItem("PK-EyeTest-HighScore") : 0;
     
     this.isFinished = true;
-	if (typeof(Storage) != "undefined") {
-        // Store
-        localStorage.setItem("PK-EyeTest-HighScore", highScore);
-    }
 
     if (highScore < this.score) {
         highScore = this.score;
         submitScore();
+    }
+	if (typeof(Storage) != "undefined") {
+        // Store
+        localStorage.setItem("PK-EyeTest-HighScore", highScore);
     }
     submitAchivement();
 	if (this.score < SLEVEL1)

@@ -19,6 +19,10 @@
                         {
                             "xml": "<meta-data android:name=\"com.google.android.gms.games.APP_ID\" android:value=\"@string/app_id\" />",
                             "count": 1
+                        },
+                        {
+                            "xml": "<activity android:name=\"com.purplebrain.adbuddiz.sdk.AdBuddizActivity\" android:theme=\"@android:style/Theme.Translucent\" />",
+                            "count": 1
                         }
                     ],
                     "/*": [
@@ -54,7 +58,7 @@
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
-                            "count": 1
+                            "count": 2
                         }
                     ]
                 }
@@ -89,6 +93,10 @@
                         {
                             "xml": "<feature name=\"Media\"><param name=\"android-package\" value=\"org.apache.cordova.media.AudioHandler\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Device\"><param name=\"android-package\" value=\"org.apache.cordova.device.Device\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -98,6 +106,16 @@
                     "/resources": [
                         {
                             "xml": "<string name=\"app_id\">73054371168</string>",
+                            "count": 1
+                        }
+                    ]
+                }
+            },
+            "config.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<feature name=\"AdBuddizBridge\"><param name=\"android-package\" value=\"com.purplebrain.adbuddiz.sdk.AdBuddizBridge\" /></feature>",
                             "count": 1
                         }
                     ]
@@ -124,6 +142,9 @@
         },
         "org.apache.cordova.media": {
             "PACKAGE_NAME": "puka.eyetest.com"
+        },
+        "com.purplebrain.adbuddiz.sdk": {
+            "PACKAGE_NAME": "puka.eyetest.com"
         }
     },
     "dependent_plugins": {
@@ -137,6 +158,9 @@
             "PACKAGE_NAME": "puka.eyetest.com"
         },
         "org.apache.cordova.file": {
+            "PACKAGE_NAME": "puka.eyetest.com"
+        },
+        "org.apache.cordova.device": {
             "PACKAGE_NAME": "puka.eyetest.com"
         }
     }
