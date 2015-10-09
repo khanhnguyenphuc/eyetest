@@ -2,14 +2,13 @@
 const GRID = 2;
 const SCORE = 0;
 const ERRORS = 0;
-const TIME = 15;
+const TIME = 15; // seconds time
 const LEVEL = 1;
 const COUNT = 0;
 const PADDING = 1;
 const RADIUS = 10;
 const OPACITY = 0.78;
-const BORDER = '2px solid white';
-const WIDTH = 720;
+const BORDER = '1px solid white';
 const SLEVEL1 = 15;
 const SLEVEL2 = 30;
 
@@ -47,47 +46,54 @@ function colorTestLevelGrid(level) {
 
 var self;
 
-function EyeTest() {
+function getElements (container) {
+	var elems = {};
+	elems.$box = $('.eyetest-content', container);
+	elems.$time = $('.time-count', container);
+	elems.$error = $('.error-count', container);
+	elems.$score = $('.score-count', container);
+	elems.$gameover = $('.game-over');
+	return elems;
+};
+
+function EyeTest(container) {
+	self = this;
+	this.elems = getElements(container);
+};
+EyeTest.prototype.init = function() {
+	
 	this.score = SCORE;
 	this.errors = ERRORS;
-	this.timing = TIME;
-	this.game_timer = null;
-	this.container = null;
+	this.gameTime = TIME;
 	this.level = LEVEL;
-	this.isFinished = false;
+	this.gameover = false;
+	this.gameTimeout = null;
 };
-EyeTest.prototype.init = function(container) {
-	self = this;
-	this.container = container;
-	this.start();
-};
-EyeTest.prototype.start = function() {
+EyeTest.prototype.startGame = function() {
 	
-	var box = $('.eyetest-contain', self.container);
-	var time = $('.time-count', self.container);
-	var error = $('.error-count', self.container);
 	var color = randomColor(self.level);
 	var width = window.innerWidth;
-	
+	var height = window.innerHeight;
 	var grid = colorTestLevelGrid(self.level);
 	var specialCell = Math.floor((Math.random() * grid * grid));
+
 	if (width <= 330) {
-		width =  width - width/2;
-	} else if (width <= 360) {
+		width =  height/2 - 20;
+	} else if (width > 330 && width <= 360) {
 		width =  width - width/5;
-	} else if ( width <= 630) {
-		width = window.innerWidth - window.innerWidth/5;
+	} else if (width > 360 && width <= 630) {
+		width = width - width/5;
 	} else {
-		width = window.innerWidth/3 - window.innerWidth/10;
+		width = width/3 - width/10;
 	}
 
-	this.isFinished = false;
-	box.width(width);
-	box.height(width);
-	box.css('visibility', '');
-	box.html("");
-	error.text(self.errors);
-	time.text(self.timing);
+	this.gameover = false;
+	this.elems.$box.width(width);
+	this.elems.$box.height(width);
+	this.elems.$box.css('visibility', '');
+	this.elems.$box.html("");
+	this.elems.$error.text(self.errors);
+	this.elems.$time.text(self.gameTime);
 	for (var j = 0; j < grid*grid; j++) {
 		var td = $('<div/>');
 		td.css({
@@ -115,55 +121,54 @@ EyeTest.prototype.start = function() {
 		        self.confirm(false);
 		    }, false);
 		}
-		box.append(td);
+		this.elems.$box.append(td);
 	}
-	clearInterval(self.game_timer);
+	clearInterval(self.gameTimeout);
 	if (self.score != 0)
-		self.game_timer = setInterval(self.update, 1000);
+		self.gameTimeout = setInterval(self.update, 1000);
 };
 EyeTest.prototype.confirm = function(answer) {
 
 	if (answer) {
 		// next game
-		var score = $('.score-count', this.container);
 		this.score += 1;
-		self.timing = TIME;
-		score.html(this.score);
+		self.gameTime = TIME; // reset game time
+		this.elems.$score.html(this.score);
 		this.level++;
 		playSound('beep', 'media/ding.MP3');
-		this.start();
+		this.startGame();
 	} else {
 		playSound('error', 'media/error.mp3');
 		if (this.score != 0) {
 
-			var box = $('.eyetest-contain', this.container);
 			// degree time 3 seconds
 			// if time equal 0 then endgame
 			this.errors += 1;
-			$('.error-count', this.container).text(self.errors);
-			if (this.timing > 3) {
-				this.timing -= 3;
-				$('.time-count', self.container).text(self.timing);
+			this.elems.$error.text(self.errors);
+			if (this.gameTime > 3) {
+				this.gameTime -= 2;
+				this.elems.$time.text(self.gameTime);
 			}
 			else {
 				// end game
-				this.stop();
+				this.endGame();
 			}
 		}
 	}
 };
 EyeTest.prototype.update = function() {
-	
-	if (self.timing <= 0)
-		self.stop();
-	self.timing -= 1;
-	$('.time-count', self.container).text(self.timing);
+
+	if (self.gameTime <= 0)
+		self.endGame();
+	else {
+		self.gameTime -= 1;
+		self.elems.$time.text(self.gameTime);
+	}
 };
-EyeTest.prototype.stop = function() {
-	var box = $('.eyetest-contain', this.container);
+EyeTest.prototype.endGame = function() {
 	var highScore = localStorage.getItem("PK-EyeTest-HighScore") ? localStorage.getItem("PK-EyeTest-HighScore") : 0;
-    
-    this.isFinished = true;
+    this.gameover = true;
+	clearInterval(self.gameTimeout);
 
     if (highScore < this.score) {
         highScore = this.score;
@@ -181,16 +186,7 @@ EyeTest.prototype.stop = function() {
 	} else {
 		playSound('genius', 'media/genius.mp3');
 	}
-	$('.time-count', this.container).text(0);
-	box.css('visibility', 'hidden');
-	$('.game-over').show(1500);
-	clearInterval(self.game_timer);
-	this.reset();
-};
-EyeTest.prototype.reset = function() {
-	this.score = SCORE;
-	this.errors = ERRORS;
-	this.timing = TIME;
-	this.game_timer = null;
-	this.level = LEVEL;
+	this.elems.$time.text(0);
+	this.elems.$box.css('visibility', 'hidden');
+	this.elems.$gameover.show(1500);
 };

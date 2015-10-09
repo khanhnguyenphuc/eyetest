@@ -5,19 +5,10 @@ function onLoad() {
     } else {
         initApp();
     }
-    // document.addEventListener('backbutton', onBackKeyDown, false);
-}
-/*Function onBackKeyDown*/
-function onBackKeyDown(event) {
-    // Handle the back button
-    event.preventDefault();
-    
 }
 var initApp = function() {
     doLoginGPlus();
-    adbuddiz.setAndroidPublisherKey("79e8e169-47a3-4ae8-bbb3-2406e851fa82");
-    // adbuddiz.setIOSPublisherKey("TEST_PUBLISHER_KEY_IOS");
-    adbuddiz.cacheAds();
+    initAdbuddiz();
 };
 function resetLayout() {
     var container = $('.eyetest-container');
@@ -26,14 +17,14 @@ function resetLayout() {
     $('.high-score-count', container).text(highScore);
     $('.score-count', container).text(SCORE);
     $('.error-count', container).text(ERRORS);
-
 }
+
 $(function () {
     var countPlaying = 0;
-    var eyetest = new EyeTest();
-    eyetest.init($('.eyetest-container'));
+    var eyetest = new EyeTest($('.eyetest-container'));
+    eyetest.init();
     resetLayout();
-
+    eyetest.startGame();
     $('.leaderboard-game').click(function(e) {
         googleplaygame.showLeaderboard({
             leaderboardId: leaderboardId
@@ -62,17 +53,20 @@ $(function () {
     //                 $('.game-over').hide();
     //                 eyetest.start();
     //             });
-$('.start-game')[0].addEventListener("touchstart", function(e) {
+    $('.start-game')[0].addEventListener("touchstart", function(e) {
 
-    resetLayout();
-    $('.game-over').hide();
-    countPlaying ++;
-    eyetest.start();
-}, false);
-setInterval(function() {
-    if (eyetest.isFinished && countPlaying % 2 == 0) {
-        adbuddiz.showAd();
-        eyetest.isFinished = false;
-    }
-}, 200);
+        resetLayout();
+        $('.game-over').hide();
+        countPlaying ++;
+        eyetest.init();
+        eyetest.startGame();
+    }, false);
+    function gameLoop() {
+        requestAnimationFrame(gameLoop);
+        if (eyetest.gameover && countPlaying % 2 == 0) {
+            showAdbuddiz();
+            eyetest.gameover = false;
+        }
+    };
+    gameLoop();
 });
